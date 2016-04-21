@@ -1,9 +1,5 @@
 package com.cottagecoders.marketmogul;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +18,7 @@ import java.util.ArrayList;
 
 public class Edit extends AppCompatActivity {
     DatabaseCode db = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +33,7 @@ public class Edit extends AppCompatActivity {
         displayStuff();
     }
 
-     private void displayStuff() {
+    private void displayStuff() {
         ArrayList<Security> securities = db.getAllSecurities();
 
         TableLayout tab = (TableLayout) findViewById(R.id.tab);
@@ -49,17 +46,17 @@ public class Edit extends AppCompatActivity {
         EditText et = new EditText(getApplicationContext());
         et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
         et.setTextColor(getResources().getColor(R.color.Black));
-        et.setPadding(10,10,10,10);
+        et.setPadding(10, 10, 10, 10);
         et.setWidth(200);
 
         CheckBox cb = new CheckBox(getApplicationContext());
         cb.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
         cb.setTextColor(getResources().getColor(R.color.Blue));
-        cb.setPadding(10,10,10,10);
+        cb.setPadding(10, 10, 10, 10);
 
         Button bu = new Button(getApplicationContext());
         bu.setTextColor(getResources().getColor(R.color.Red));
-        bu.setPadding(10,10,10,10);
+        bu.setPadding(10, 10, 10, 10);
         bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
         bu.setTag(et);
         bu.setText("save");
@@ -90,7 +87,7 @@ public class Edit extends AppCompatActivity {
             et = new EditText(getApplicationContext());
             et.setTextColor(getResources().getColor(R.color.Black));
             et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
-            et.setPadding(10,10,10,10);
+            et.setPadding(10, 10, 10, 10);
             et.setWidth(200);
             et.setText(s.getTicker());
             tr.addView(et);
@@ -98,7 +95,7 @@ public class Edit extends AppCompatActivity {
             cb = new CheckBox(getApplicationContext());
             cb.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
             cb.setTextColor(getResources().getColor(R.color.Blue));
-            cb.setPadding(10,10,10,10);
+            cb.setPadding(10, 10, 10, 10);
             cb.setChecked(s.isOnStatus() == true ? true : false);
             tr.addView(cb);
 
@@ -107,7 +104,7 @@ public class Edit extends AppCompatActivity {
             bu.setTag(s);
             bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
             bu.setTextColor(getResources().getColor(R.color.Red));
-            bu.setPadding(10,10,10,10);
+            bu.setPadding(10, 10, 10, 10);
             bu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

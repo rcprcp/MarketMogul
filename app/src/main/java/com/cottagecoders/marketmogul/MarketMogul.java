@@ -138,13 +138,14 @@ public class MarketMogul extends AppCompatActivity {
             tr.addView(tv);
 
             tv = textViewSetup();
-            setChange(tv, s.getChange());
+            setChange(tv, s.getChange(), "");
             tr.addView(tv);
 
             tv = textViewSetup();
             if(s.getCurrPrice() != 0) {
-                double pchg = s.getChange() / s.getCurrPrice();
-                setChange(tv, pchg);
+                double pchg = (s.getChange() / s.getCurrPrice()) * 100;
+                Log.d(TAG, "DEBUG: pchg " + pchg + " change, price " + s.getChange()+ " " + s.getCurrPrice());
+                setChange(tv, pchg, "%");
             } else {
                 tv.setText("0.0");
             }
@@ -238,8 +239,8 @@ public class MarketMogul extends AppCompatActivity {
         startActivityForResult(intent, 111);
     }
 
-    void setChange(TextView tv, double change) {
-        tv.setText(String.format("%.2f", change));
+    void setChange(TextView tv, double change, String suffix) {
+        tv.setText(String.format("%.2f%s", change, suffix));
         if (change < 0) {
             tv.setTextColor(getResources().getColor(R.color.Red));
         } else if (change > 0) {
@@ -404,7 +405,7 @@ public class MarketMogul extends AppCompatActivity {
         double val = 0.0;
 
         try {
-            tmp = json.getString("l");
+            tmp = json.getString("l_fix");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.d(TAG, "last price exception " + e);
@@ -427,6 +428,7 @@ public class MarketMogul extends AppCompatActivity {
             tmp = json.getString("c");
         } catch (Exception e) {
             // TODO Auto-generated catch block
+            Log.d(TAG, "tkr exception " + e);
             Log.d(TAG, "tkr exception " + e);
         }
         Log.d(TAG, "change is " + tmp);
