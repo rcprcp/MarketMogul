@@ -11,7 +11,7 @@ the app is not in foreground.  there is a boolean that gets toggled in onPause/o
 NOTES:
 * US equities (seem to) work.  
 * If there is a bad ticker, the time field is replaced by "ERROR". 
-* some tickers automatically "re-map".  RHAT, Redhat's old ticker gets remapped somewhere 
+* some tickers automatically "re-map".  RHAT, Redhat's old (NASDAQ) ticker gets remapped somewhere 
 on the server to "RHT" - their new ticker on the NYSE.  I think I should update the database to 
 reflect the ticker change.
 * Indexes are 
