@@ -17,4 +17,6 @@ reflect the ticker change.
 * the only index i've tested is DJ Industrials.  use .dji
 
 TODO: 
-* definitely need to get a better data source.  something we can use for ticker lookup.  
+* Definitely need to get a better data source.  Something we can use for ticker lookup.  Also it would be nice to get the volume.  
+* See if it's feasible to use a two-column layout when in landscape more on a tablet.
+* There is no limit on the number of tickers; it's in a scrollview. 
