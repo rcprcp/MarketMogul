@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MarketMogul</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_about">About</string>
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_edit">Edit</string>
+    <string name="notification_title">NOTIFICATION!</string>
+
+</resources>
