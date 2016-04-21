@@ -14,8 +14,10 @@ NOTES:
 * some tickers automatically "re-map".  RHAT, Redhat's old ticker gets remapped somewhere 
 on the server to "RHT" - their new ticker on the NYSE.  I think I should update the database to 
 reflect the ticker change.
-* the only index i've tested is DJ Industrials.  use .dji
-
+* Indexes are 
+* * DJ Industrials .dji
+* * SPX .inx
+* * NASDAQ composite .ixic
 TODO: 
 * Definitely need to get a better data source.  Something we can use for ticker lookup.  Also it would be nice to get the volume.  
 * See if it's feasible to use a two-column layout when in landscape more on a tablet.
