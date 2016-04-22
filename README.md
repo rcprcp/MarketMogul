@@ -21,4 +21,5 @@ reflect the ticker change.
 TODO: 
 * Definitely need to get a better data source.  Something we can use for ticker lookup.  Also it would be nice to get the volume.  
 * See if it's feasible to use a two-column layout when in landscape mode on a tablet.
+* Edit screen needs UI improvements.
 * There is no limit on the number of tickers; it's in a scrollview. Is this going to be a problem.  Currently testing with 12-15 tickers.
