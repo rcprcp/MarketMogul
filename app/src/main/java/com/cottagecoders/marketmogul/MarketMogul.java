@@ -61,7 +61,6 @@ public class MarketMogul extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "called onPause");
         isPaused = true;
         // cancel any previous delayed runnable(s).
         handler.removeCallbacks(runnable);
@@ -70,7 +69,6 @@ public class MarketMogul extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "called onResume");
         isPaused = false;
         new GetInfo().execute();
     }
@@ -144,7 +142,6 @@ public class MarketMogul extends AppCompatActivity {
             tv = textViewSetup();
             if (s.getCurrPrice() != 0) {
                 double pchg = (s.getChange() / s.getCurrPrice()) * 100;
-                Log.d(TAG, "DEBUG: pchg " + pchg + " change, price " + s.getChange() + " " + s.getCurrPrice());
                 setChange(tv, pchg, "%");
             } else {
                 tv.setText("0.0");
@@ -308,7 +305,6 @@ public class MarketMogul extends AppCompatActivity {
         //         + upc;
 
         url += security.getTicker();
-        Log.d(TAG, "url: " + url);
 
         String output = null;
         try {
@@ -341,8 +337,7 @@ public class MarketMogul extends AppCompatActivity {
         CharSequence brc = "]";
         output = output.replace(brc, nothing);
 
-        Log.v(TAG, "output: " + output);
-
+        //Log.v(TAG, "output: " + output);
 
         // JSON testing and debugging code.
         JSONObject json = null;
@@ -363,7 +358,6 @@ public class MarketMogul extends AppCompatActivity {
             // TODO Auto-generated catch block
             Log.d(TAG, "id exception " + e);
         }
-        Log.d(TAG, "id  is " + id);
         if (id == null || id == "") {
             return;
         }
@@ -376,7 +370,6 @@ public class MarketMogul extends AppCompatActivity {
             // TODO Auto-generated catch block
             Log.d(TAG, "tkr exception " + e);
         }
-        Log.d(TAG, "tkr is " + tkr);
         if (tkr == null || tkr == "") {
             return;
         }
@@ -394,11 +387,9 @@ public class MarketMogul extends AppCompatActivity {
             // TODO Auto-generated catch block
             Log.d(TAG, "time exception " + e);
         }
-        Log.d(TAG, "tmp  is " + tmp);
         if (tkr == null || tkr == "") {
             return;
         }
-        Log.d(TAG, "time tmp is " + tkr);
         security.setTime(tmp);
 
         //get last price
@@ -414,7 +405,6 @@ public class MarketMogul extends AppCompatActivity {
         if (tmp == null || tmp == "") {
             return;
         }
-        Log.d(TAG, "last price tmp is " + tkr);
         try {
             security.setCurrPrice(Double.parseDouble(tmp));
         } catch (Exception e) {
@@ -428,10 +418,8 @@ public class MarketMogul extends AppCompatActivity {
             tmp = json.getString("c");
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "tkr exception " + e);
-            Log.d(TAG, "tkr exception " + e);
+            Log.d(TAG, "change-on-day exception " + e);
         }
-        Log.d(TAG, "change is " + tmp);
         if (tmp == null || tmp == "") {
             return;
         }
@@ -457,7 +445,10 @@ public class MarketMogul extends AppCompatActivity {
             input = new BufferedReader(new InputStreamReader(
                     httpconn.getInputStream()), 8192);
         } else {
-            Log.d(TAG, "myHttpGET(): bad http code. " + u + " code " + httpconn.getResponseCode() + " msg " + httpconn.getResponseMessage());
+            Log.d(TAG, "myHttpGET(): bad http code. " + u
+                        + " code "
+                        + httpconn.getResponseCode()
+                        + httpconn.getResponseMessage());
         }
         StringBuilder response = new StringBuilder();
         String strline = null;

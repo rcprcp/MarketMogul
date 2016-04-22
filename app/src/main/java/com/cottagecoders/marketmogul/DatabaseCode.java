@@ -127,13 +127,12 @@ public class DatabaseCode extends SQLiteOpenHelper {
             return securities;
         }
         while (tt.moveToNext()) {
-            Log.d(MarketMogul.TAG, "getAllSecurities() \"" + tt.getString(0) + "\" " + tt.getInt(1));
             boolean b = tt.getInt(1) == 1 ? true : false;
             Security s = new Security(
                     tt.getString(0),
                     "--",
                     0.0, 0.0, 0.0, 0.0, 0.0,
-                    true, b);
+                    false, b);
 
             securities.add(s);
         }
