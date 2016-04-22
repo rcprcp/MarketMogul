@@ -1,6 +1,5 @@
 package com.cottagecoders.marketmogul;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -36,6 +35,7 @@ public class MarketMogul extends AppCompatActivity {
     Runnable runnable = null;
     DatabaseCode db = null;
     NotificationManager notificationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +119,9 @@ public class MarketMogul extends AppCompatActivity {
         tab.addView(tr);
 
         for (Security s : sec) {
-            if(s.getTicker().contains("aap")) {
-            //if(s.isOnStatus() == true) {
-               // notifyViaStatusBar(s);
+            if (s.getTicker().contains("aap")) {
+                //if(s.isOnStatus() == true) {
+                // notifyViaStatusBar(s);
             }
             tr = new TableRow(getApplicationContext());
 
@@ -142,9 +142,9 @@ public class MarketMogul extends AppCompatActivity {
             tr.addView(tv);
 
             tv = textViewSetup();
-            if(s.getCurrPrice() != 0) {
+            if (s.getCurrPrice() != 0) {
                 double pchg = (s.getChange() / s.getCurrPrice()) * 100;
-                Log.d(TAG, "DEBUG: pchg " + pchg + " change, price " + s.getChange()+ " " + s.getCurrPrice());
+                Log.d(TAG, "DEBUG: pchg " + pchg + " change, price " + s.getChange() + " " + s.getCurrPrice());
                 setChange(tv, pchg, "%");
             } else {
                 tv.setText("0.0");
@@ -303,7 +303,7 @@ public class MarketMogul extends AppCompatActivity {
 
     private void getSecurityInfo(Security security) {
         //   String url = "http://finance.google.com/finance/info?client=ig&q=NASDAQ%3aMSFT";
-        String url = "http://finance.google.com/finance/info?client=ig&q=NASDAQ%3a";
+        String url = "http://finance.google.com/finance/info?client=ig&q=";
         //  String url = "https://www.googleapis.com/books/v1/volumes?q=isbn:"
         //         + upc;
 
@@ -456,6 +456,8 @@ public class MarketMogul extends AppCompatActivity {
         if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK) {
             input = new BufferedReader(new InputStreamReader(
                     httpconn.getInputStream()), 8192);
+        } else {
+            Log.d(TAG, "myHttpGET(): bad http code. " + u + " code " + httpconn.getResponseCode() + " msg " + httpconn.getResponseMessage());
         }
         StringBuilder response = new StringBuilder();
         String strline = null;
