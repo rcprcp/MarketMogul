@@ -23,10 +23,10 @@ public class Edit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar a = getSupportActionBar();
-        a.setDisplayHomeAsUpEnabled(true);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+      //  ActionBar a = getSupportActionBar();
+      //  a.setDisplayHomeAsUpEnabled(true);
 
         db = new DatabaseCode(getApplicationContext());
 
@@ -44,20 +44,17 @@ public class Edit extends AppCompatActivity {
         TableRow tr = new TableRow(getApplicationContext());
 
         EditText et = new EditText(getApplicationContext());
-        et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
+            et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
         et.setTextColor(getResources().getColor(R.color.Black));
-        et.setPadding(10, 10, 10, 10);
         et.setWidth(200);
 
         CheckBox cb = new CheckBox(getApplicationContext());
         cb.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
         cb.setTextColor(getResources().getColor(R.color.Blue));
-        cb.setPadding(10, 10, 10, 10);
 
         Button bu = new Button(getApplicationContext());
         bu.setTextColor(getResources().getColor(R.color.Red));
-        bu.setPadding(10, 10, 10, 10);
-        bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
+       bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
         bu.setTag(et);
         bu.setText("save");
         bu.setOnClickListener(new View.OnClickListener() {

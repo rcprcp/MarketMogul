@@ -2,6 +2,7 @@ package com.cottagecoders.marketmogul;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +14,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -40,8 +44,6 @@ public class MarketMogul extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_mogul);
-        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
@@ -257,20 +259,16 @@ public class MarketMogul extends AppCompatActivity {
 
 
     private class GetInfo extends AsyncTask<Void, Integer, Integer> {
-
+ProgressDialog dialog = null;
         @Override
         protected void onPreExecute() {
-            /*********************8
              Log.d(TAG, "AsyncTask - onPreExecute");
-             progress = new ProgressDialog(act);
-             progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-             progress.setIndeterminate(false);
-             progress.setCancelable(true);
-             progress.setMax(upcs.size());
-             progress.setTitle("Processing...");
-             progress.setMessage("HaHa you're doomed.");
-             progress.show();
-             ************************/
+            dialog = new ProgressDialog(MarketMogul.this);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setMessage("Loading. Please wait...");
+            dialog.setIndeterminate(true);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
         }
 
         @Override
@@ -295,6 +293,7 @@ public class MarketMogul extends AppCompatActivity {
                     handler.postDelayed(runnable, 60000);
                 }
             }
+            dialog.hide();
         }
     }
 
