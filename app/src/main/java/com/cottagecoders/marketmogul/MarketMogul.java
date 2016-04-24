@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,9 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -39,6 +37,7 @@ public class MarketMogul extends AppCompatActivity {
     Runnable runnable = null;
     DatabaseCode db = null;
     NotificationManager notificationManager;
+    boolean displayPleaseWait = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +55,15 @@ public class MarketMogul extends AppCompatActivity {
                 new GetInfo().execute();
             }
         };
+    }
 
-        runnable.run();
+    private boolean isLandscape() {
+        return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
 
     @Override
     public void onPause() {
+        Log.d(TAG, "onPause");
         super.onPause();
         isPaused = true;
         // cancel any previous delayed runnable(s).
@@ -70,14 +72,16 @@ public class MarketMogul extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        Log.d(TAG, "onResume");
         super.onResume();
         isPaused = false;
+        displayPleaseWait = true;
         new GetInfo().execute();
     }
 
-    private void createTable(ArrayList<Security> sec) {
-        TableRow tr = null;
+    private void tableTitleRow() {
         TableLayout tab = null;
+        TableRow tr = null;
         TextView tv = null;
 
         tab = (TableLayout) findViewById(R.id.tab);
@@ -86,47 +90,69 @@ public class MarketMogul extends AppCompatActivity {
 
         // create title row:
         tr = new TableRow(getApplicationContext());
-        tv = textViewSetup();
-        tv.setText("Ticker");
-        tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
-        tv.setTextColor(getResources().getColor(R.color.White));
-        tr.addView(tv);
 
-        tv = textViewSetup();
-        tv.setText("Time");
-        tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
-        tv.setTextColor(getResources().getColor(R.color.White));
-        tr.addView(tv);
+        int numCols = 0;
+        if (isLandscape())
+            numCols = 2;
 
-        tv = textViewSetup();
-        tv.setText("Price");
-        tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
-        tv.setTextColor(getResources().getColor(R.color.White));
-        tr.addView(tv);
-
-        tv = textViewSetup();
-        tv.setText("Change");
-        tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
-        tv.setTextColor(getResources().getColor(R.color.White));
-        tr.addView(tv);
-
-        tv = textViewSetup();
-        tv.setText("%Chg");
-        tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
-        tv.setTextColor(getResources().getColor(R.color.White));
-        tr.addView(tv);
-
-        tab.addView(tr);
-
-        for (Security s : sec) {
-            if (s.getTicker().contains("aap")) {
-                //if(s.isOnStatus() == true) {
-                // notifyViaStatusBar(s);
-            }
-            tr = new TableRow(getApplicationContext());
+        for (int i = 0; i < numCols; i++) {
+            tv = textViewSetup();
+            tv.setText("Ticker");
+            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setTextColor(getResources().getColor(R.color.White));
+            tr.addView(tv);
 
             tv = textViewSetup();
+            tv.setText("Time");
+            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setTextColor(getResources().getColor(R.color.White));
+            tr.addView(tv);
+
+            tv = textViewSetup();
+            tv.setText("Price");
+            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setTextColor(getResources().getColor(R.color.White));
+            tr.addView(tv);
+
+            tv = textViewSetup();
+            tv.setText("Change");
+            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setTextColor(getResources().getColor(R.color.White));
+            tr.addView(tv);
+
+            tv = textViewSetup();
+            tv.setText("%Chg");
+            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setTextColor(getResources().getColor(R.color.White));
+            tr.addView(tv);
+        }
+
+        tab.addView(tr);
+    }
+
+    private void createTable(ArrayList<Security> sec) {
+        TableLayout tab = null;
+        tab = (TableLayout) findViewById(R.id.tab);
+        assert tab != null;
+
+        TableRow tr = null;
+
+        // create title row:
+        tableTitleRow();
+
+        int leftRight = 0;
+        for (Security s : sec) {
+            if (isLandscape()) {
+                if( leftRight % 2 == 0) {
+                    tr = new TableRow(getApplicationContext());
+                }
+            } else {
+                tr = new TableRow(getApplicationContext());
+            }
+            TextView tv = textViewSetup();
             tv.setText(s.getTicker());
+            tv.setTextColor(getResources().getColor(R.color.White));
+            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
             tr.addView(tv);
 
             tv = textViewSetup();
@@ -150,9 +176,16 @@ public class MarketMogul extends AppCompatActivity {
             }
             tr.addView(tv);
 
+            leftRight++;
+            if (isLandscape()) {
+                if(leftRight % 2 == 1) {
+                    // don't add the row  to table yet, go back
+                    // to top and put in the right-hand column.
+                    continue;
+                }
+            }
             tab.addView(tr);
         }
-
     }
 
     private void notifyViaStatusBarWithIcon(Security sec) {
@@ -214,11 +247,10 @@ public class MarketMogul extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
+        Log.d(TAG, "onActiviryResult");
         switch (requestCode) {
             case 111: //edit
                 securities = db.getAllSecurities();
-                new GetInfo().execute();
                 break;
             case 222: //about
                 break;
@@ -259,16 +291,20 @@ public class MarketMogul extends AppCompatActivity {
 
 
     private class GetInfo extends AsyncTask<Void, Integer, Integer> {
-ProgressDialog dialog = null;
+        ProgressDialog dialog = null;
+
         @Override
         protected void onPreExecute() {
-             Log.d(TAG, "AsyncTask - onPreExecute");
-            dialog = new ProgressDialog(MarketMogul.this);
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setMessage("Loading. Please wait...");
-            dialog.setIndeterminate(true);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
+            Log.d(TAG, "AsyncTask - onPreExecute");
+            if (displayPleaseWait == true) {
+                dialog = new ProgressDialog(MarketMogul.this);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setTitle("MarketMogul");
+                dialog.setMessage("Retrieving data.  Please wait...");
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            }
         }
 
         @Override
@@ -290,10 +326,15 @@ ProgressDialog dialog = null;
                 handler.removeCallbacks(runnable);
                 // set it to run in a minute.
                 if (!isPaused) {
+                    displayPleaseWait = false;
                     handler.postDelayed(runnable, 60000);
                 }
             }
-            dialog.hide();
+            if (dialog != null) {
+                dialog.hide();
+                dialog = null;
+            }
+            displayPleaseWait = false;
         }
     }
 
@@ -445,9 +486,9 @@ ProgressDialog dialog = null;
                     httpconn.getInputStream()), 8192);
         } else {
             Log.d(TAG, "myHttpGET(): bad http code. " + u
-                        + " code "
-                        + httpconn.getResponseCode()
-                        + httpconn.getResponseMessage());
+                    + " code "
+                    + httpconn.getResponseCode()
+                    + httpconn.getResponseMessage());
         }
         StringBuilder response = new StringBuilder();
         String strline = null;
