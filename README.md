@@ -18,8 +18,17 @@ reflect the ticker change.
 * DJ Industrials .dji (looks like it's 15 minutes delayed).
 * SPX .inx (realtime-ish).
 * NASDAQ composite .ixic  (also realtime-ish).
+
 TODO: 
 * Definitely need to get a better data source.  Something we can use for ticker lookup.  Also it would be nice to get the volume.  
-* See if it's feasible to use a two-column layout when in landscape mode on a tablet.
-* Edit screen needs UI improvements.
-* There is no limit on the number of tickers; it's in a scrollview. Is this going to be a problem.  Currently testing with 12-15 tickers.
+* DONE.  See if it's feasible to use a two-column layout when in landscape mode on a tablet.
+* Edit screen is a mess - it needs UI improvements.
+* Update timer is hard coded t 60 seconds.  Should this be variable?
+* Do something with the "About" screen. 
+* Should we track amount of data sent and received?
+* There is no limit on the number of tickers; it's in a ScrollView (and a HorizontalScrollView). Is this going to be a problem?  Currently testing with 12-15 tickers.
+
+Done:
+* fix bug causing double updates. 
+* implemented progress bar, for start up, and when returning from the "Edit" screen, but it does not display when normal (timed) updates occur.
+* Two-column layout is all done. 
