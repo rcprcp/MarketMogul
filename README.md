@@ -6,7 +6,7 @@ This app uses http requests to get JSON data.
 It does not validate tickers.
 
 It makes the http requests each minute (hard coded), and does not make the requests when 
-the app is not in foreground.  there is a boolean that gets toggled in onPause/onResume.
+the app is not in foreground.  there is a boolean that gets toggled in onPause/onResume which controls the updating process.
 
 NOTES:
 * US equities (seem to) work.  
