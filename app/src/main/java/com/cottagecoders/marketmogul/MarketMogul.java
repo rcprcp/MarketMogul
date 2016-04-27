@@ -23,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -472,30 +471,48 @@ public class MarketMogul extends AppCompatActivity {
         }
     }
 
-    private String myHttpGET(String u) throws IOException {
+    private String myHttpGET(String u) {
 
         URL url = null;
-        url = new URL(u);
+        try {
+            url = new URL(u);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         HttpURLConnection httpconn = null;
-        httpconn = (HttpURLConnection) url.openConnection();
-
-        BufferedReader input = null;
-        if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            input = new BufferedReader(new InputStreamReader(
-                    httpconn.getInputStream()), 8192);
-        } else {
-            Log.d(TAG, "myHttpGET(): bad http code. " + u
-                    + " code "
-                    + httpconn.getResponseCode()
-                    + httpconn.getResponseMessage());
+        try {
+            httpconn = (HttpURLConnection) url.openConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        BufferedReader input = null;
+        try {
+            if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                input = new BufferedReader(new InputStreamReader(
+                        httpconn.getInputStream()), 8192);
+            } else {
+                Log.d(TAG, "myHttpGET(): bad http return code. url: " + u
+                        + " code "
+                        + httpconn.getResponseCode()
+                        + " "
+                        + httpconn.getResponseMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         StringBuilder response = new StringBuilder();
         String strline = null;
-        while ((strline = input.readLine()) != null) {
-            response.append(strline);
+        try {
+            while ((strline = input.readLine()) != null) {
+                response.append(strline);
+            }
+            input.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        input.close();
+
         return response.toString();
     }
 }

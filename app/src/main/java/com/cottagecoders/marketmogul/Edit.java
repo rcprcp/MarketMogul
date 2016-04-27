@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -22,16 +23,31 @@ public class Edit extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_edit);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-      //  ActionBar a = getSupportActionBar();
-      //  a.setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar a = getSupportActionBar();
+        a.setDisplayHomeAsUpEnabled(true);
 
         db = new DatabaseCode(getApplicationContext());
 
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         displayStuff();
     }
+
+
+
 
     private void displayStuff() {
         ArrayList<Security> securities = db.getAllSecurities();
@@ -83,14 +99,14 @@ public class Edit extends AppCompatActivity {
 
             et = new EditText(getApplicationContext());
             et.setTextColor(getResources().getColor(R.color.Black));
-            et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
+   //         et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
             et.setPadding(10, 10, 10, 10);
             et.setWidth(200);
             et.setText(s.getTicker());
             tr.addView(et);
 
             cb = new CheckBox(getApplicationContext());
-            cb.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
+//            cb.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
             cb.setTextColor(getResources().getColor(R.color.Blue));
             cb.setPadding(10, 10, 10, 10);
             cb.setChecked(s.isOnStatus() == true ? true : false);
@@ -99,7 +115,7 @@ public class Edit extends AppCompatActivity {
             bu = new Button(getApplicationContext());
             bu.setText("X");
             bu.setTag(s);
-            bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
+ //           bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
             bu.setTextColor(getResources().getColor(R.color.Red));
             bu.setPadding(10, 10, 10, 10);
             bu.setOnClickListener(new View.OnClickListener() {
@@ -121,8 +137,9 @@ public class Edit extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+        Log.d(MarketMogul.TAG, " onOptionsItemSelected: " + item.getItemId());
         switch (item.getItemId()) {
-            case R.id.home:
+            case android.R.id.home:
                 setResult(RESULT_OK, getIntent());
                 finish();
                 return true;
