@@ -32,3 +32,4 @@ Done:
 * fix bug causing double updates. 
 * implemented progress bar, for start up, and when returning from the "Edit" screen, but it does not display when normal (timed) updates occur.
 * Two-column layout is all done. 
+* Added "up as home" in the left corner of the action bar for Edit and About screens.
