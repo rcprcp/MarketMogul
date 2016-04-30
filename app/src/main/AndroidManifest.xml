@@ -10,21 +10,20 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MarketMogul">
+
+        <activity
+            android:name=".MarketMogul">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".About"
-            android:label="@string/title_activity_about"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_about" />
         <activity
             android:name=".Edit"
-            android:label="@string/title_activity_edit"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_edit" />
     </application>
 
 </manifest>
