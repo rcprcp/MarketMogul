@@ -1,6 +1,7 @@
 package com.cottagecoders.marketmogul;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class Edit extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ActionBar a = getSupportActionBar();
+        assert a != null;
         a.setDisplayHomeAsUpEnabled(true);
 
         db = new DatabaseCode(getApplicationContext());
@@ -55,29 +57,29 @@ public class Edit extends AppCompatActivity {
         TableRow tr = new TableRow(getApplicationContext());
 
         EditText et = new EditText(getApplicationContext());
-            et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
-        et.setTextColor(getResources().getColor(R.color.Black));
+            et.setBackgroundResource(R.drawable.custom_border);
+        et.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Black));
         et.setWidth(200);
 
         CheckBox cb = new CheckBox(getApplicationContext());
-        cb.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
-        cb.setTextColor(getResources().getColor(R.color.Blue));
+        cb.setBackgroundResource(R.drawable.custom_border);
+        cb.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Blue));
 
         Button bu = new Button(getApplicationContext());
-        bu.setTextColor(getResources().getColor(R.color.Red));
-       bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
+        bu.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Red));
+
+        bu.setBackgroundResource(R.drawable.custom_border);
         bu.setTag(et);
-        bu.setText("save");
+        bu.setText(R.string.save);
         bu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText et = (EditText) v.getTag();
                 Security s = new Security();
                 s.setTicker(et.getText().toString());
-                Log.d(MarketMogul.TAG, "MarketMogul: EDIT ticker \"" + s.getTicker() + "\"");
+
                 int rcode = db.insertIntoTickerTable(s);
-                if (rcode == 0) { //ok.
-                } else {
+                if (rcode != 0) { // it's not ok.
                     Toast.makeText(getApplicationContext(), "Duplicate ticker " + s.getTicker(), Toast.LENGTH_SHORT).show();
                 }
                 displayStuff();
@@ -93,25 +95,27 @@ public class Edit extends AppCompatActivity {
             tr = new TableRow(getApplicationContext());
 
             et = new EditText(getApplicationContext());
-            et.setTextColor(getResources().getColor(R.color.Black));
-   //         et.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
+            et.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Black));
+            et.setBackgroundResource(R.drawable.custom_border);
             et.setPadding(10, 10, 10, 10);
             et.setWidth(200);
             et.setText(s.getTicker());
             tr.addView(et);
 
             cb = new CheckBox(getApplicationContext());
-//            cb.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
-            cb.setTextColor(getResources().getColor(R.color.Blue));
+            cb.setBackgroundResource(R.drawable.custom_border);
+     //       cb.setTextColor(getResources().getColor(R.color.Blue));
+            cb.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Blue));
             cb.setPadding(10, 10, 10, 10);
-            cb.setChecked(s.isOnStatus() == true ? true : false);
+            cb.setChecked(s.isOnStatus());
             tr.addView(cb);
 
             bu = new Button(getApplicationContext());
             bu.setText("X");
             bu.setTag(s);
- //           bu.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_border));
-            bu.setTextColor(getResources().getColor(R.color.Red));
+            bu.setBackgroundResource(R.drawable.custom_border);
+            bu.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Red));
+
             bu.setPadding(10, 10, 10, 10);
             bu.setOnClickListener(new View.OnClickListener() {
                 @Override
