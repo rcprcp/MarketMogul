@@ -78,9 +78,10 @@ public class Edit extends AppCompatActivity {
                 Security s = new Security();
                 s.setTicker(et.getText().toString());
 
-                int rcode = db.insertIntoTickerTable(s);
-                if (rcode != 0) { // it's not ok.
-                    Toast.makeText(getApplicationContext(), "Duplicate ticker " + s.getTicker(), Toast.LENGTH_SHORT).show();
+                try {
+                    db.insertIntoTickerTable(s);
+                } catch(Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage() + " " + s.getTicker(), Toast.LENGTH_SHORT).show();
                 }
                 displayStuff();
             }

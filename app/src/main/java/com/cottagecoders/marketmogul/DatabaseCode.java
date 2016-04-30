@@ -70,12 +70,12 @@ public class DatabaseCode extends SQLiteOpenHelper {
 
     }
 
-    public int insertIntoTickerTable(Security sec) {
+    public void insertIntoTickerTable(Security sec) throws  DuplicateDataException {
         if (db == null) {
             db = getWritableDatabase();
         }
 
-        int stat  = sec.isOnStatus() == true ? 1 : 0;
+        int stat  = sec.isOnStatus() ? 1 : 0 ;
         String stmt = "INSERT INTO "
                 + T_TICKERS
                 + " (ticker, is_on_status)"
@@ -87,10 +87,8 @@ public class DatabaseCode extends SQLiteOpenHelper {
             db.execSQL(stmt);
         } catch (Exception e) {
             Log.i(TAG, "insertIntoTickerTable(): " + stmt + " failed " + e);
-            return -1 ;
+            throw new DuplicateDataException("Duplicate ticker");
         }
-
-        return 0;
 
     }
 
@@ -127,7 +125,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
             return securities;
         }
         while (tt.moveToNext()) {
-            boolean b = tt.getInt(1) == 1 ? true : false;
+            boolean b = (tt.getInt(1) == 1);
             Security s = new Security(
                     tt.getString(0),
                     "--",
@@ -141,4 +139,9 @@ public class DatabaseCode extends SQLiteOpenHelper {
         return securities;
     }
 
+    public class DuplicateDataException extends Exception {
+        public DuplicateDataException(String message) {
+            super(message);
+        }
+    }
 }
