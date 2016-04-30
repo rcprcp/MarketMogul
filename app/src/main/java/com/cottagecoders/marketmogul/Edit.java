@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class Edit extends AppCompatActivity {
 
                 try {
                     db.insertIntoTickerTable(s);
+                    Toast.makeText(getApplicationContext(), "Added " + s.getTicker(), Toast.LENGTH_SHORT).show();
                 } catch(Exception e) {
                     Toast.makeText(getApplicationContext(), e.getMessage() + " " + s.getTicker(), Toast.LENGTH_SHORT).show();
                 }
@@ -95,13 +97,14 @@ public class Edit extends AppCompatActivity {
         for (Security s : securities) {
             tr = new TableRow(getApplicationContext());
 
-            et = new EditText(getApplicationContext());
-            et.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Black));
-            et.setBackgroundResource(R.drawable.custom_border);
-            et.setPadding(10, 10, 10, 10);
-            et.setWidth(200);
-            et.setText(s.getTicker());
-            tr.addView(et);
+//            et = new EditText(getApplicationContext());
+            TextView tv = new TextView(getApplicationContext());
+            tv.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Black));
+            tv.setBackgroundResource(R.drawable.custom_border);
+            tv.setPadding(10, 10, 10, 10);
+            tv.setWidth(200);
+            tv.setText(s.getTicker());
+            tr.addView(tv);
 
             cb = new CheckBox(getApplicationContext());
             cb.setBackgroundResource(R.drawable.custom_border);
