@@ -1,5 +1,6 @@
 package com.cottagecoders.marketmogul;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -45,33 +46,40 @@ public class Edit extends AppCompatActivity {
     }
 
 
-
-
     private void displayStuff() {
         ArrayList<Security> securities = db.getAllSecurities();
 
         TableLayout tab = (TableLayout) findViewById(R.id.tab);
         assert tab != null;
         tab.removeAllViews();
-
+        tab.setPadding(10, 10, 10, 10);
         // empty for a new one.
         TableRow tr = new TableRow(getApplicationContext());
 
         EditText et = new EditText(getApplicationContext());
-            et.setBackgroundResource(R.drawable.custom_border);
+        et.setBackgroundResource(R.drawable.custom_border);
         et.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Black));
+        et.setPadding(10, 10, 10, 10);
+
         et.setWidth(200);
 
         CheckBox cb = new CheckBox(getApplicationContext());
         cb.setBackgroundResource(R.drawable.custom_border);
         cb.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Blue));
 
+        final int ICON_SIZE = 22;
+        String saveIcon = "\uf206";
+        String trashCanIcon = "\uf1f8";
+        Typeface tf = Typeface.createFromAsset(
+                getApplicationContext().getAssets(), "fontawesome-webfont.ttf");
+
         Button bu = new Button(getApplicationContext());
         bu.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Red));
 
         bu.setBackgroundResource(R.drawable.custom_border);
         bu.setTag(et);
-        bu.setText(R.string.save);
+        bu.setText("save");
+        bu.setTextSize(ICON_SIZE);
         bu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,13 +90,16 @@ public class Edit extends AppCompatActivity {
                 try {
                     db.insertIntoTickerTable(s);
                     Toast.makeText(getApplicationContext(), "Added " + s.getTicker(), Toast.LENGTH_SHORT).show();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), e.getMessage() + " " + s.getTicker(), Toast.LENGTH_SHORT).show();
                 }
                 displayStuff();
             }
         });
 
+     //   tr.addView(et, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1));
+     //   tr.addView(cb, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1));
+     //   tr.addView(bu, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1));
         tr.addView(et);
         tr.addView(cb);
         tr.addView(bu);
@@ -108,14 +119,17 @@ public class Edit extends AppCompatActivity {
 
             cb = new CheckBox(getApplicationContext());
             cb.setBackgroundResource(R.drawable.custom_border);
-     //       cb.setTextColor(getResources().getColor(R.color.Blue));
+            //       cb.setTextColor(getResources().getColor(R.color.Blue));
             cb.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Blue));
             cb.setPadding(10, 10, 10, 10);
             cb.setChecked(s.isOnStatus());
             tr.addView(cb);
 
             bu = new Button(getApplicationContext());
-            bu.setText("X");
+            bu.setTypeface(tf);
+            bu.setTextSize(ICON_SIZE);
+            bu.setText(trashCanIcon);
+
             bu.setTag(s);
             bu.setBackgroundResource(R.drawable.custom_border);
             bu.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Red));
