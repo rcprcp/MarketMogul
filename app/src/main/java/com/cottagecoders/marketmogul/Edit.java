@@ -68,7 +68,7 @@ public class Edit extends AppCompatActivity {
         cb.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Blue));
 
         final int ICON_SIZE = 22;
-        String saveIcon = "\uf206";
+        String saveIcon = "\uF0C7";
         String trashCanIcon = "\uf1f8";
         Typeface tf = Typeface.createFromAsset(
                 getApplicationContext().getAssets(), "fontawesome-webfont.ttf");
@@ -78,8 +78,10 @@ public class Edit extends AppCompatActivity {
 
         bu.setBackgroundResource(R.drawable.custom_border);
         bu.setTag(et);
-        bu.setText("save");
+        bu.setTypeface(tf);
         bu.setTextSize(ICON_SIZE);
+        bu.setText(saveIcon);
+
         bu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,9 +99,6 @@ public class Edit extends AppCompatActivity {
             }
         });
 
-     //   tr.addView(et, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1));
-     //   tr.addView(cb, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1));
-     //   tr.addView(bu, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1));
         tr.addView(et);
         tr.addView(cb);
         tr.addView(bu);
