@@ -152,7 +152,7 @@ public class Edit extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        Log.d(MarketMogul.TAG, " onOptionsItemSelected: " + item.getItemId());
+        Log.d(getResources().getString(R.string.app_name), " onOptionsItemSelected: " + item.getItemId());
         switch (item.getItemId()) {
             case android.R.id.home:
                 setResult(RESULT_OK, getIntent());

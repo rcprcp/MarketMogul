@@ -1,15 +1,12 @@
 package com.cottagecoders.marketmogul;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -29,7 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MarketMogul extends AppCompatActivity {
-    static final String TAG = "MarketMogul";
+
     static boolean isPaused = false;
     ArrayList<Security> securities = new ArrayList<>();
     Handler handler = null;
@@ -37,6 +34,7 @@ public class MarketMogul extends AppCompatActivity {
     DatabaseCode db = null;
     NotificationManager notificationManager;
     boolean displayPleaseWait = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +60,17 @@ public class MarketMogul extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        Log.d(TAG, "onPause");
+        Log.d(getResources().getString(R.string.app_name), "onPause");
         super.onPause();
         isPaused = true;
+
         // cancel any previous delayed runnable(s).
         handler.removeCallbacks(runnable);
     }
 
     @Override
     public void onResume() {
-        Log.d(TAG, "onResume");
+        Log.d(getResources().getString(R.string.app_name), "onResume");
         super.onResume();
         isPaused = false;
         displayPleaseWait = true;
@@ -140,11 +139,11 @@ public class MarketMogul extends AppCompatActivity {
         tableTitleRow();
 
         int leftRight = 0;
-        for(int i = 0 ; i < sec.size() ; i++){
+        for (int i = 0; i < sec.size(); i++) {
             Security s = sec.get(i);
 
             if (isLandscape()) {
-                if( leftRight % 2 == 0) {
+                if (leftRight % 2 == 0) {
                     tr = new TableRow(getApplicationContext());
                 }
             } else {
@@ -179,10 +178,10 @@ public class MarketMogul extends AppCompatActivity {
 
             leftRight++;
             if (isLandscape()) {
-                if(leftRight % 2 == 1) {
+                if (leftRight % 2 == 1) {
                     // check if this is the last item, and it would be on
                     // the left side of the two-column display.
-                    if( i == sec.size()-1) {
+                    if (i == sec.size() - 1) {
                         tab.addView(tr);
                     }
                     continue;
@@ -190,39 +189,6 @@ public class MarketMogul extends AppCompatActivity {
             }
             tab.addView(tr);
         }
-    }
-
-    private void notifyViaStatusBarWithIcon(Security sec) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_action_edit)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
-// Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MarketMogul.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MarketMogul.class);
-// Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-
-// mId allows you to update the notification later on.
-        int mId = 111;
-        mNotificationManager.notify(mId, mBuilder.build());
-
     }
 
     @Override
@@ -251,7 +217,7 @@ public class MarketMogul extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        Log.d(TAG, "onActiviryResult");
+        Log.d(getResources().getString(R.string.app_name), "onActiviryResult");
         switch (requestCode) {
             case 111: //edit
                 securities = db.getAllSecurities();
@@ -299,9 +265,9 @@ public class MarketMogul extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            Log.d(TAG, "AsyncTask - onPreExecute");
+            Log.d(getResources().getString(R.string.app_name), "AsyncTask - onPreExecute");
             if (displayPleaseWait == true) {
-                if(dialog == null) {
+                if (dialog == null) {
                     dialog = new ProgressDialog(MarketMogul.this);
                     dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     dialog.setTitle("MarketMogul");
@@ -324,7 +290,7 @@ public class MarketMogul extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            Log.d(TAG, "AsyncTask - onPostExecute");
+            Log.d(getResources().getString(R.string.app_name), "AsyncTask - onPostExecute");
             createTable(securities);
             if (securities.size() != 0) {
                 // cancel any previous delayed runnable(s).
@@ -336,7 +302,7 @@ public class MarketMogul extends AppCompatActivity {
                 }
             }
             if (dialog != null) {
-                dialog.hide();
+                dialog.dismiss();
                 dialog = null;
             }
             displayPleaseWait = false;
@@ -353,7 +319,7 @@ public class MarketMogul extends AppCompatActivity {
         try {
             output = myHttpGET(url);
         } catch (Exception e) {
-            Log.d(TAG, "getSecurityInfo: http fail... " + e);
+            Log.d(getResources().getString(R.string.app_name), "getSecurityInfo: http fail... " + e);
         }
 
         if (output == null) {
@@ -380,7 +346,7 @@ public class MarketMogul extends AppCompatActivity {
         bracket = "]";
         output = output.replace(bracket, nothing);
 
-        //Log.v(TAG, "output: " + output);
+        //Log.v(getResources().getString(R.string.app_name), "output: " + output);
 
         // JSON testing and debugging code.
         JSONObject json = null;
@@ -399,7 +365,7 @@ public class MarketMogul extends AppCompatActivity {
             assert id != null;
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "id exception " + e);
+            Log.d(getResources().getString(R.string.app_name), "id exception " + e);
         }
         if (id == null || id == "") {
             return;
@@ -411,14 +377,14 @@ public class MarketMogul extends AppCompatActivity {
             tkr = json.getString("t");
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "tkr exception " + e);
+            Log.d(getResources().getString(R.string.app_name), "tkr exception " + e);
         }
         if (tkr == null || tkr == "") {
             return;
         }
 
         if (!security.getTicker().equalsIgnoreCase(tkr)) {
-            Log.d(TAG, "TICKER MISMATCH.  EPIC FAIL returned \"" + tkr + "\"  looking for \"" + security.getTicker() + "\"");
+            Log.d(getResources().getString(R.string.app_name), "TICKER MISMATCH.  EPIC FAIL returned \"" + tkr + "\"  looking for \"" + security.getTicker() + "\"");
             return;
         }
 
@@ -428,7 +394,7 @@ public class MarketMogul extends AppCompatActivity {
             tmp = json.getString("ltt");
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "time exception " + e);
+            Log.d(getResources().getString(R.string.app_name), "time exception " + e);
         }
         if (tkr == null || tkr == "") {
             return;
@@ -442,7 +408,7 @@ public class MarketMogul extends AppCompatActivity {
             tmp = json.getString("l_fix");
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "last price exception " + e);
+            Log.d(getResources().getString(R.string.app_name), "last price exception " + e);
         }
 
         if (tmp == null || tmp == "") {
@@ -451,7 +417,7 @@ public class MarketMogul extends AppCompatActivity {
         try {
             security.setCurrPrice(Double.parseDouble(tmp));
         } catch (Exception e) {
-            Log.d(MarketMogul.TAG, "error parsing currPrice. " + tmp);
+            Log.d(getResources().getString(R.string.app_name), "error parsing currPrice. " + tmp);
             security.setTime("ERROR");
             security.setCurrPrice(0);
         }
@@ -461,7 +427,7 @@ public class MarketMogul extends AppCompatActivity {
             tmp = json.getString("c");
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "change-on-day exception " + e);
+            Log.d(getResources().getString(R.string.app_name), "change-on-day exception " + e);
         }
         if (tmp == null || tmp == "") {
             return;
@@ -469,7 +435,7 @@ public class MarketMogul extends AppCompatActivity {
         try {
             security.setChange(Double.parseDouble(tmp));
         } catch (Exception e) {
-            Log.d(MarketMogul.TAG, "error parsing change. " + tmp);
+            Log.d(getResources().getString(R.string.app_name), "error parsing change. " + tmp);
             security.setTime("ERROR");
             security.setChange(0);
         }
@@ -496,7 +462,7 @@ public class MarketMogul extends AppCompatActivity {
                 input = new BufferedReader(new InputStreamReader(
                         httpconn.getInputStream()), 8192);
             } else {
-                Log.d(TAG, "myHttpGET(): bad http return code. url: " + u
+                Log.d(getResources().getString(R.string.app_name), "myHttpGET(): bad http return code. url: " + u
                         + " code "
                         + httpconn.getResponseCode()
                         + " "
