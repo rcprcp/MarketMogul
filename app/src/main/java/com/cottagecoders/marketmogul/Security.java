@@ -11,8 +11,6 @@ public class Security {
     double highPrice;
     double lowPrice;
     double volume;
-    boolean isDelayed;
-    boolean isOnStatus;
 
     public Security() {
         this.ticker = "";
@@ -22,14 +20,11 @@ public class Security {
         this.highPrice = 0.0;
         this.lowPrice = 0.0;
         this.volume = 0.0;
-        this.isDelayed = false;
-        this.isOnStatus = false;
 
     }
 
     public Security(String ticker, String time,
-                    double currPrice, double change, double highPrice, double lowPrice, double volume,
-                    boolean isDelayed, boolean isOnStatus) {
+                    double currPrice, double change, double highPrice, double lowPrice, double volume) {
 
         this.ticker = ticker;
         this.time = time;
@@ -38,8 +33,6 @@ public class Security {
         this.highPrice = highPrice;
         this.lowPrice = lowPrice;
         this.volume = volume;
-        this.isDelayed = isDelayed;
-        this.isOnStatus = isOnStatus;
     }
 
     public String getTicker() {
@@ -96,22 +89,6 @@ public class Security {
 
     public void setVolume(double volume) {
         this.volume = volume;
-    }
-
-    public boolean isDelayed() {
-        return isDelayed;
-    }
-
-    public void setDelayed(boolean delayed) {
-        isDelayed = delayed;
-    }
-
-    public boolean isOnStatus() {
-        return isOnStatus;
-    }
-
-    public void setOnStatus(boolean onStatus) {
-        isOnStatus = onStatus;
     }
 }
 

@@ -140,7 +140,9 @@ public class MarketMogul extends AppCompatActivity {
         tableTitleRow();
 
         int leftRight = 0;
-        for (Security s : sec) {
+        for(int i = 0 ; i < sec.size() ; i++){
+            Security s = sec.get(i);
+
             if (isLandscape()) {
                 if( leftRight % 2 == 0) {
                     tr = new TableRow(getApplicationContext());
@@ -178,8 +180,11 @@ public class MarketMogul extends AppCompatActivity {
             leftRight++;
             if (isLandscape()) {
                 if(leftRight % 2 == 1) {
-                    // don't add the row  to table yet, go back
-                    // to top and put in the right-hand column.
+                    // check if this is the last item, and it would be on
+                    // the left side of the two-column display.
+                    if( i == sec.size()-1) {
+                        tab.addView(tr);
+                    }
                     continue;
                 }
             }
@@ -339,10 +344,8 @@ public class MarketMogul extends AppCompatActivity {
     }
 
     private void getSecurityInfo(Security security) {
-        //   String url = "http://finance.google.com/finance/info?client=ig&q=NASDAQ%3aMSFT";
+
         String url = "http://finance.google.com/finance/info?client=ig&q=";
-        //  String url = "https://www.googleapis.com/books/v1/volumes?q=isbn:"
-        //         + upc;
 
         url += security.getTicker();
 

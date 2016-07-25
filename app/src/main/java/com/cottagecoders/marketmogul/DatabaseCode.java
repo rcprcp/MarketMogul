@@ -15,6 +15,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
     private static final int VERSION = 1;
 
     private static final String T_TICKERS = "tickers";
+    private static final String T_INFO = "info";
 
     private static SQLiteDatabase db = null;
 
@@ -23,24 +24,24 @@ public class DatabaseCode extends SQLiteOpenHelper {
     }
 
     /**
-     * create all the tables... this will be called when the database does not
+     * create both tables... this will be called when the database does not
      * exist.
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String stmt;
-
-        // books...
-        stmt = "CREATE TABLE " + T_TICKERS
-                + " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + " ticker VARCHAR(50), "
-                + " is_on_status INT) ";
-
+        String stmt = "CREATE TABLE " + T_TICKERS
+                + " (ticker VARCHAR(50) PRIMARY KEY)";
 
         myExecSQL(db, "onCreate()", stmt);
 
-        stmt = "CREATE UNIQUE INDEX " + T_TICKERS + "_ix1  ON " + T_TICKERS + "(ticker) ";
+        Security sec = new Security(".dji", "--", 0.0, 0.0, 0.0, 0.0, 0.0);
+        sec = new Security("aapl", "--", 0.0, 0.0, 0.0, 0.0, 0.0);
+        sec = new Security("googl", "--", 0.0, 0.0, 0.0, 0.0, 0.0);
+        stmt = "CREATE TABLE " + T_INFO
+                + " (name VARCHAR(50) PRIMARY KEY, "
+                + " value INTEGER";
+
         myExecSQL(db, "onCreate()", stmt);
 
     }
@@ -70,18 +71,21 @@ public class DatabaseCode extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * routine to add a new security to the database.
+     * @param sec - Secutiry object.
+     * @throws DuplicateDataException
+     */
     public void insertIntoTickerTable(Security sec) throws  DuplicateDataException {
         if (db == null) {
             db = getWritableDatabase();
         }
 
-        int stat  = sec.isOnStatus() ? 1 : 0 ;
         String stmt = "INSERT INTO "
                 + T_TICKERS
-                + " (ticker, is_on_status)"
+                + " (ticker)"
                 + " VALUES "
-                + "(" + "\"" + sec.getTicker() + "\", " + stat
-                + " )";
+                + "(" + "\"" + sec.getTicker() + "\")";
 
         try {
             db.execSQL(stmt);
@@ -92,6 +96,10 @@ public class DatabaseCode extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * delete a specific security from the database.
+     * @param sec
+     */
     public void deleteFromTickers(Security sec) {
         if (db == null) {
             db = getWritableDatabase();
@@ -102,12 +110,16 @@ public class DatabaseCode extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * get all the securities from the database.
+     * @return ArryaList of Security objects.
+     */
     public ArrayList<Security> getAllSecurities() {
         if (db == null) {
             db = getWritableDatabase();
         }
 
-        String stmt = "SELECT ticker, is_on_status "
+        String stmt = "SELECT ticker"
                 + " FROM "
                 + T_TICKERS
                 + " ORDER BY ticker ";
@@ -125,12 +137,10 @@ public class DatabaseCode extends SQLiteOpenHelper {
             return securities;
         }
         while (tt.moveToNext()) {
-            boolean b = (tt.getInt(1) == 1);
             Security s = new Security(
                     tt.getString(0),
                     "--",
-                    0.0, 0.0, 0.0, 0.0, 0.0,
-                    false, b);
+                    0.0, 0.0, 0.0, 0.0, 0.0);
 
             securities.add(s);
         }

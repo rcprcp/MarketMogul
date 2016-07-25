@@ -121,7 +121,6 @@ public class Edit extends AppCompatActivity {
             //       cb.setTextColor(getResources().getColor(R.color.Blue));
             cb.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.Blue));
             cb.setPadding(10, 10, 10, 10);
-            cb.setChecked(s.isOnStatus());
             tr.addView(cb);
 
             bu = new Button(getApplicationContext());
