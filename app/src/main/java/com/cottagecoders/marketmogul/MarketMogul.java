@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -89,38 +90,38 @@ public class MarketMogul extends AppCompatActivity {
         // create title row:
         tr = new TableRow(getApplicationContext());
 
-        int numCols = 0;
+        int numCols = 1;
         if (isLandscape())
             numCols = 2;
 
         for (int i = 0; i < numCols; i++) {
             tv = textViewSetup();
             tv.setText("Ticker");
-            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tv.setTextColor(getResources().getColor(R.color.White));
             tr.addView(tv);
 
             tv = textViewSetup();
             tv.setText("Time");
-            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tv.setTextColor(getResources().getColor(R.color.White));
             tr.addView(tv);
 
             tv = textViewSetup();
             tv.setText("Price");
-            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tv.setTextColor(getResources().getColor(R.color.White));
             tr.addView(tv);
 
             tv = textViewSetup();
             tv.setText("Change");
-            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tv.setTextColor(getResources().getColor(R.color.White));
             tr.addView(tv);
 
             tv = textViewSetup();
             tv.setText("%Chg");
-            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tv.setTextColor(getResources().getColor(R.color.White));
             tr.addView(tv);
         }
@@ -152,7 +153,7 @@ public class MarketMogul extends AppCompatActivity {
             TextView tv = textViewSetup();
             tv.setText(s.getTicker());
             tv.setTextColor(getResources().getColor(R.color.White));
-            tv.setBackgroundColor(getResources().getColor(R.color.SteelBlue));
+            tv.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tr.addView(tv);
 
             tv = textViewSetup();
@@ -443,6 +444,10 @@ public class MarketMogul extends AppCompatActivity {
 
     private String myHttpGET(String u) {
 
+
+        NetworkInfo net = db.getNetworkInfo();
+        net.setSent(net.getSent() + u.length());
+
         URL url = null;
         try {
             url = new URL(u);
@@ -482,6 +487,10 @@ public class MarketMogul extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        net.setReceived(net.getReceived() + response.length());
+        net.setSince(System.currentTimeMillis());
+        db.updateNetworkStats(net);
 
         return response.toString();
     }

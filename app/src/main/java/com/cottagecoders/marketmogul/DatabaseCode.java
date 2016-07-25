@@ -15,7 +15,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
     private static final int VERSION = 1;
 
     private static final String T_TICKERS = "tickers";
-    private static final String T_INFO = "info";
+    private static final String T_STATS = "stats";
 
     private static SQLiteDatabase db = null;
 
@@ -30,7 +30,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String stmt = "CREATE TABLE " + T_TICKERS + " (ticker VARCHAR(25))";
+        String stmt = "CREATE TABLE " + T_TICKERS + " (ticker VARCHAR(25) PRIMARY KEY)";
 
         myExecSQL(db, "onCreate()", stmt);
 
@@ -61,6 +61,15 @@ public class DatabaseCode extends SQLiteOpenHelper {
         stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"cat\")";
         myExecSQL(db, "onCreate", stmt);
 
+
+        stmt = "CREATE TABLE " + T_STATS + " (received long, sent long, since long)";
+        myExecSQL(db, "onCreate", stmt);
+        Log.d(TAG, "create" + stmt);
+
+        stmt = "insert into " + T_STATS + " (received, sent, since) VALUES (0, 0, " + System.currentTimeMillis() + " )";
+        myExecSQL(db, "onCreate", stmt);
+        Log.d(TAG, "insert:" + stmt);
+
     }
 
     /**
@@ -77,21 +86,21 @@ public class DatabaseCode extends SQLiteOpenHelper {
         try {
             db.execSQL(stmt);
         } catch (Exception e) {
-            Log.i(TAG, rtn + " myExecSQL(): " + stmt + " failed " + e);
+            Log.d(TAG, rtn + " myExecSQL(): " + stmt + " failed " + e);
         }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // implement migration code here.
-        Log.i(TAG, "onUpgrade() -- get here.");
+        Log.d(TAG, "onUpgrade() -- get here.");
 
     }
 
     /**
      * routine to add a new security to the database.
      *
-     * @param sec - Secutiry object.
+     * @param sec - Security object.
      * @throws DuplicateDataException
      */
     public void insertIntoTickerTable(Security sec) throws DuplicateDataException {
@@ -108,10 +117,60 @@ public class DatabaseCode extends SQLiteOpenHelper {
         try {
             db.execSQL(stmt);
         } catch (Exception e) {
-            Log.i(TAG, "insertIntoTickerTable(): " + stmt + " failed " + e);
+            Log.d(TAG, "insertIntoTickerTable(): " + stmt + " failed " + e);
             throw new DuplicateDataException("Duplicate ticker");
         }
 
+    }
+
+    /**
+     * update network use information in the database.
+     */
+    public void updateNetworkStats(NetworkInfo net) {
+        if (db == null) {
+            db = getWritableDatabase();
+        }
+
+        String stmt = "UPDATE "
+                + T_STATS
+                + " SET "
+                + " received = "
+                + net.getReceived()
+                + ",  sent  = "
+                + net.getSent()
+                + ", since = "
+                + net.getSince();
+
+        try {
+            db.execSQL(stmt);
+        } catch (Exception e) {
+            Log.d(TAG, "updateNetworkStats(): " + stmt + " failed " + e);
+        }
+    }
+
+    /**
+     * get network info.
+     *
+     * @return populated NetworkInfo object
+     */
+    public NetworkInfo getNetworkInfo() {
+        if (db == null) {
+            db = getWritableDatabase();
+        }
+
+        String stmt = "SELECT received, sent, since FROM " + T_STATS;
+        Cursor c = null;
+        try {
+            c = db.rawQuery(stmt, null);
+        } catch (Exception e) {
+            Log.d(TAG, "getNetworkInfo(): rawQuery exception: " + e.getMessage());
+            return null;
+        }
+
+        c.moveToFirst();
+        NetworkInfo net = new NetworkInfo(c.getLong(0), c.getLong(1), c.getLong(2));
+        c.close();
+        return net;
     }
 
     /**
