@@ -21,7 +21,6 @@ reflect the ticker change, or indicate the change in the UI.
 
 TODO: 
 * Definitely need to get a better data source.  Something we can use for ticker lookup.  Also it would be nice to get the volume.  
-* DONE.  See if it's feasible to use a two-column layout when in landscape mode on a tablet.
 * Edit screen is a mess - it needs UI improvements.
 * Update timer is hard coded to 60 seconds.  Should this be variable?
 * Do something with the "About" screen. 
@@ -29,7 +28,10 @@ TODO:
 * There is no limit on the number of tickers; it's in a ScrollView (and a HorizontalScrollView). Is this going to be a problem?  Currently testing with 12-15 tickers.
 
 Done:
-* fix bug causing double updates. 
+* Implement two-column layout when in landscape mode.
+* fix bug in langscape mode if there is an off number of securities - last security does not get displayed.
+* add a few initial entries to the database.
+* fix bug causing double updates.
 * implemented progress bar, for start up, and when returning from the "Edit" screen, but it does not display when normal (timed) updates occur.
 * Two-column layout is all done. 
 * Added "up as home" in the left corner of the action bar for Edit and About screens.
