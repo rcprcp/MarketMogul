@@ -371,11 +371,11 @@ public class MarketMogul extends AppCompatActivity {
         CharSequence slash = "//";
         output = output.replace(slash, nothing);
 
-        CharSequence bro = "[";
-        output = output.replace(bro, nothing);
+        CharSequence bracket = "[";
+        output = output.replace(bracket, nothing);
 
-        CharSequence brc = "]";
-        output = output.replace(brc, nothing);
+        bracket = "]";
+        output = output.replace(bracket, nothing);
 
         //Log.v(TAG, "output: " + output);
 
