@@ -14,16 +14,16 @@ NOTES:
 * some tickers automatically "re-map".  RHAT, Redhat's old (NASDAQ) ticker gets remapped somewhere 
 on the server to "RHT" - their new ticker on the NYSE.  I think I should update the database to 
 reflect the ticker change, or indicate the change in the UI.
-* Indexes are 
-* DJ Industrials .dji (looks like it's 15 minutes delayed).
-* SPX .inx (realtime-ish).
-* NASDAQ composite .ixic  (also realtime-ish).
+* Indexes are:
+  * DJ Industrials .dji (looks like it's 15 minutes delayed).
+  * SPX .inx (realtime-ish).
+  * NASDAQ composite .ixic  (also realtime-ish).
 
 TODO: 
 * Definitely need to get a better data source.  Something we can use for ticker lookup.  Also it would be nice to get the volume.  
 * DONE.  See if it's feasible to use a two-column layout when in landscape mode on a tablet.
 * Edit screen is a mess - it needs UI improvements.
-* Update timer is hard coded t 60 seconds.  Should this be variable?
+* Update timer is hard coded to 60 seconds.  Should this be variable?
 * Do something with the "About" screen. 
 * Should we track amount of data sent and received?
 * There is no limit on the number of tickers; it's in a ScrollView (and a HorizontalScrollView). Is this going to be a problem?  Currently testing with 12-15 tickers.
