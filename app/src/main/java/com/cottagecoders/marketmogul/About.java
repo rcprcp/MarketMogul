@@ -14,6 +14,7 @@ public class About extends AppCompatActivity {
         ActionBar a = getSupportActionBar();
         a.setDisplayHomeAsUpEnabled(true);
 
+
     }
 
     @Override

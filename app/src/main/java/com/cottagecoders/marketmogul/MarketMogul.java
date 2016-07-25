@@ -296,13 +296,15 @@ public class MarketMogul extends AppCompatActivity {
         protected void onPreExecute() {
             Log.d(TAG, "AsyncTask - onPreExecute");
             if (displayPleaseWait == true) {
-                dialog = new ProgressDialog(MarketMogul.this);
-                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setTitle("MarketMogul");
-                dialog.setMessage("Retrieving data.  Please wait...");
-                dialog.setIndeterminate(true);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
+                if(dialog == null) {
+                    dialog = new ProgressDialog(MarketMogul.this);
+                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    dialog.setTitle("MarketMogul");
+                    dialog.setMessage("Retrieving data.  Please wait...");
+                    dialog.setIndeterminate(true);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                }
             }
         }
 
@@ -310,7 +312,6 @@ public class MarketMogul extends AppCompatActivity {
         protected Integer doInBackground(Void... Void) {
 
             for (Security s : securities) {
-
                 getSecurityInfo(s);
             }
             return 1;   // must return 1 or onPostExecute will NOT be called.
