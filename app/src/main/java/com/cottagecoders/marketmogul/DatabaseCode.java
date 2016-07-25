@@ -30,19 +30,36 @@ public class DatabaseCode extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String stmt = "CREATE TABLE " + T_TICKERS
-                + " (ticker VARCHAR(50) PRIMARY KEY)";
+        String stmt = "CREATE TABLE " + T_TICKERS + " (ticker VARCHAR(25))";
 
         myExecSQL(db, "onCreate()", stmt);
 
-        Security sec = new Security(".dji", "--", 0.0, 0.0, 0.0, 0.0, 0.0);
-        sec = new Security("aapl", "--", 0.0, 0.0, 0.0, 0.0, 0.0);
-        sec = new Security("googl", "--", 0.0, 0.0, 0.0, 0.0, 0.0);
-        stmt = "CREATE TABLE " + T_INFO
-                + " (name VARCHAR(50) PRIMARY KEY, "
-                + " value INTEGER";
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"aapl\")";
+        myExecSQL(db, "onCreate", stmt);
 
-        myExecSQL(db, "onCreate()", stmt);
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\".dji\")";
+        myExecSQL(db, "onCreate", stmt);
+
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"googl\")";
+        myExecSQL(db, "onCreate", stmt);
+
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"goog\")";
+        myExecSQL(db, "onCreate", stmt);
+
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"dis\")";
+        myExecSQL(db, "onCreate", stmt);
+
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"ibm\")";
+        myExecSQL(db, "onCreate", stmt);
+
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"f\")";
+        myExecSQL(db, "onCreate", stmt);
+
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"aa\")";
+        myExecSQL(db, "onCreate", stmt);
+
+        stmt = "INSERT INTO " + T_TICKERS + "(ticker) VALUES (\"cat\")";
+        myExecSQL(db, "onCreate", stmt);
 
     }
 
@@ -73,10 +90,11 @@ public class DatabaseCode extends SQLiteOpenHelper {
 
     /**
      * routine to add a new security to the database.
+     *
      * @param sec - Secutiry object.
      * @throws DuplicateDataException
      */
-    public void insertIntoTickerTable(Security sec) throws  DuplicateDataException {
+    public void insertIntoTickerTable(Security sec) throws DuplicateDataException {
         if (db == null) {
             db = getWritableDatabase();
         }
@@ -85,7 +103,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
                 + T_TICKERS
                 + " (ticker)"
                 + " VALUES "
-                + "(" + "\"" + sec.getTicker() + "\")";
+                + "(" + "\"" + sec.getTicker().toLowerCase().trim() + "\")";
 
         try {
             db.execSQL(stmt);
@@ -98,6 +116,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
 
     /**
      * delete a specific security from the database.
+     *
      * @param sec
      */
     public void deleteFromTickers(Security sec) {
@@ -112,6 +131,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
 
     /**
      * get all the securities from the database.
+     *
      * @return ArryaList of Security objects.
      */
     public ArrayList<Security> getAllSecurities() {
