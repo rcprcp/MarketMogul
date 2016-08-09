@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 public class Edit extends AppCompatActivity {
     DatabaseCode db = null;
+    int returnCode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class Edit extends AppCompatActivity {
                 try {
                     db.insertIntoTickerTable(s);
                     Toast.makeText(getApplicationContext(), "Added " + s.getTicker(), Toast.LENGTH_SHORT).show();
+                    returnCode = MarketMogul.MUST_REFRESH;
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), e.getMessage() + " " + s.getTicker(), Toast.LENGTH_SHORT).show();
                 }
@@ -138,6 +140,7 @@ public class Edit extends AppCompatActivity {
                 public void onClick(View v) {
                     Security s = (Security) v.getTag();
                     db.deleteFromTickers(s);
+                    returnCode = MarketMogul.MUST_REFRESH;
                     displayStuff();
                 }
             });
@@ -155,7 +158,7 @@ public class Edit extends AppCompatActivity {
         Log.d(getResources().getString(R.string.app_name), " onOptionsItemSelected: " + item.getItemId());
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT_OK, getIntent());
+                setResult(returnCode, getIntent());
                 finish();
                 return true;
             default:

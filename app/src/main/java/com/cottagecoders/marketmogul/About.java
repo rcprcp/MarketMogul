@@ -41,14 +41,14 @@ public class About extends AppCompatActivity {
         ((Button) findViewById(R.id.resetButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.updateNetworkStats(new NetworkInfo(0, 0, System.currentTimeMillis()));
+                db.updateNetworkStats(new NetworkUse(0, 0, System.currentTimeMillis()));
                 updateScreen();
             }
         });
     }
 
     void updateScreen() {
-        NetworkInfo nn = db.getNetworkInfo();
+        NetworkUse nn = db.getNetworkInfo();
 
         Date dd = new Date(nn.getSince());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd HH:mm z");

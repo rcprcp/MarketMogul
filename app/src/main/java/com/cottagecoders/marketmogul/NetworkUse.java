@@ -1,6 +1,6 @@
 package com.cottagecoders.marketmogul;
 
-public class NetworkInfo {
+public class NetworkUse {
     long received;
     long sent;
     long since;
@@ -29,7 +29,7 @@ public class NetworkInfo {
         this.since = since;
     }
 
-    public NetworkInfo(long received, long sent, long since) {
+    public NetworkUse(long received, long sent, long since) {
         this.received = received;
         this.sent = sent;
         this.since = since;

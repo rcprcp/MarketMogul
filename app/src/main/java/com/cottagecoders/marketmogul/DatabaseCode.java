@@ -126,7 +126,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
     /**
      * update network use information in the database.
      */
-    public void updateNetworkStats(NetworkInfo net) {
+    public void updateNetworkStats(NetworkUse net) {
         if (db == null) {
             db = getWritableDatabase();
         }
@@ -151,9 +151,9 @@ public class DatabaseCode extends SQLiteOpenHelper {
     /**
      * get network info.
      *
-     * @return populated NetworkInfo object
+     * @return populated NetworkUse object
      */
-    public NetworkInfo getNetworkInfo() {
+    public NetworkUse getNetworkInfo() {
         if (db == null) {
             db = getWritableDatabase();
         }
@@ -168,7 +168,7 @@ public class DatabaseCode extends SQLiteOpenHelper {
         }
 
         c.moveToFirst();
-        NetworkInfo net = new NetworkInfo(c.getLong(0), c.getLong(1), c.getLong(2));
+        NetworkUse net = new NetworkUse(c.getLong(0), c.getLong(1), c.getLong(2));
         c.close();
         return net;
     }

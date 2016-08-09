@@ -1,13 +1,11 @@
 package com.cottagecoders.marketmogul;
 
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -30,32 +28,33 @@ public class MarketMogul extends AppCompatActivity {
 
     static boolean isPaused = false;
     ArrayList<Security> securities = new ArrayList<>();
+    long lastUpdate = 0;
     Handler handler = null;
     Runnable runnable = null;
     DatabaseCode db = null;
-    NotificationManager notificationManager;
-    boolean displayPleaseWait = true;
 
+    static final int MUST_REFRESH = 678;
+
+    // interval in ms.
+    final long UPDATE_INTERVAL = 60000;
+
+//   NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_mogul);
 
-        notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+//        notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
-        db = new DatabaseCode(getApplicationContext());
-        securities = db.getAllSecurities();
-
-        handler = new Handler();
-        runnable = new Runnable() {
-            public void run() {
-                new GetInfo().execute();
-            }
-        };
     }
 
-    private boolean isLandscape() {
+    /**
+     * simple helper function to let us know if we're in landscape mode.
+     *
+     * @return is device in landscape orientation?
+     */
+    private boolean landscape() {
         return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
 
@@ -73,11 +72,36 @@ public class MarketMogul extends AppCompatActivity {
     public void onResume() {
         Log.d(getResources().getString(R.string.app_name), "onResume");
         super.onResume();
+
+        if (db == null) {
+            db = new DatabaseCode(getApplicationContext());
+            securities = db.getAllSecurities();
+        }
+
+        if (handler == null) {
+            handler = new Handler();
+        }
+
+        if (runnable == null) {
+            runnable = new Runnable() {
+                public void run() {
+                    new GetInfo().execute();
+                }
+            };
+        }
+
         isPaused = false;
-        displayPleaseWait = true;
-        new GetInfo().execute();
+        // time in seconds.
+        long currTime = System.currentTimeMillis();
+        if (lastUpdate < currTime - UPDATE_INTERVAL) {
+            new GetInfo().execute();
+        }
     }
 
+    /**
+     * After removing all the rows from the table, this routine initializes
+     * the table with the header.
+     */
     private void tableTitleRow() {
         TableLayout tab = null;
         TableRow tr = null;
@@ -90,8 +114,9 @@ public class MarketMogul extends AppCompatActivity {
         // create title row:
         tr = new TableRow(getApplicationContext());
 
+        // portrait - 1 column, landscape 2 columns.
         int numCols = 1;
-        if (isLandscape())
+        if (landscape())
             numCols = 2;
 
         for (int i = 0; i < numCols; i++) {
@@ -143,7 +168,7 @@ public class MarketMogul extends AppCompatActivity {
         for (int i = 0; i < sec.size(); i++) {
             Security s = sec.get(i);
 
-            if (isLandscape()) {
+            if (landscape()) {
                 if (leftRight % 2 == 0) {
                     tr = new TableRow(getApplicationContext());
                 }
@@ -178,7 +203,7 @@ public class MarketMogul extends AppCompatActivity {
             tr.addView(tv);
 
             leftRight++;
-            if (isLandscape()) {
+            if (landscape()) {
                 if (leftRight % 2 == 1) {
                     // check if this is the last item, and it would be on
                     // the left side of the two-column display.
@@ -218,13 +243,21 @@ public class MarketMogul extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        Log.d(getResources().getString(R.string.app_name), "onActiviryResult");
+        Log.d(getResources().getString(R.string.app_name), "onActivityResult");
         switch (requestCode) {
             case 111: //edit
                 securities = db.getAllSecurities();
+                if (resultCode == MUST_REFRESH) {
+                    lastUpdate = 0;   // force screen redraw.
+                }
                 break;
+
             case 222: //about
+                if(lastUpdate + UPDATE_INTERVAL < System.currentTimeMillis()) {
+                    lastUpdate = 0;
+                }
                 break;
+
             default:
                 break;
         }
@@ -267,16 +300,14 @@ public class MarketMogul extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             Log.d(getResources().getString(R.string.app_name), "AsyncTask - onPreExecute");
-            if (displayPleaseWait == true) {
-                if (dialog == null) {
-                    dialog = new ProgressDialog(MarketMogul.this);
-                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    dialog.setTitle("MarketMogul");
-                    dialog.setMessage("Retrieving data.  Please wait...");
-                    dialog.setIndeterminate(true);
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
-                }
+            if (dialog == null) {
+                dialog = new ProgressDialog(MarketMogul.this);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setTitle("MarketMogul");
+                dialog.setMessage("Retrieving data.  Please wait...");
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
             }
         }
 
@@ -298,15 +329,17 @@ public class MarketMogul extends AppCompatActivity {
                 handler.removeCallbacks(runnable);
                 // set it to run in a minute.
                 if (!isPaused) {
-                    displayPleaseWait = false;
-                    handler.postDelayed(runnable, 60000);
+                    handler.postDelayed(runnable, UPDATE_INTERVAL);
                 }
             }
+
+            // remove dialog box, if on-screen.
             if (dialog != null) {
                 dialog.dismiss();
                 dialog = null;
             }
-            displayPleaseWait = false;
+
+            lastUpdate = System.currentTimeMillis();
         }
     }
 
@@ -323,7 +356,7 @@ public class MarketMogul extends AppCompatActivity {
             Log.d(getResources().getString(R.string.app_name), "getSecurityInfo: http fail... " + e);
         }
 
-        if (output == null) {
+        if (output == null || output.equals("")) {
             security.setCurrPrice(0);
             security.setHighPrice(0);
             security.setLowPrice(0);
@@ -333,31 +366,28 @@ public class MarketMogul extends AppCompatActivity {
             return;
         }
 
-        // google's reply is *almost* in JSON format.
-        // it has leading // and it has [] around the whole thing.
-        // seems easier to parse if we can treat it as a JSONObject...
+        // Google's reply is *almost* in JSON format.
+        // it has leading "//" and it has "[]" around the whole thing.
+        // modify it so we can treat it as a JSONObject...
 
-        CharSequence nothing = "";
-        CharSequence slash = "//";
-        output = output.replace(slash, nothing);
+        output = output.replace("//", "");
 
         CharSequence bracket = "[";
-        output = output.replace(bracket, nothing);
+        output = output.replace(bracket, "");
 
         bracket = "]";
-        output = output.replace(bracket, nothing);
+        output = output.replace(bracket, "");
 
+        // TODO: remove debugging code.
         //Log.v(getResources().getString(R.string.app_name), "output: " + output);
 
-        // JSON testing and debugging code.
-        JSONObject json = null;
+        JSONObject json;
         try {
             json = new JSONObject(output);
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            return;
         }
-
 
         // get id.
         String id = "";
@@ -367,8 +397,11 @@ public class MarketMogul extends AppCompatActivity {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.d(getResources().getString(R.string.app_name), "id exception " + e);
+            return;
         }
-        if (id == null || id == "") {
+
+        if (id == null || id.equals("")) {
+            Log.d(getResources().getString(R.string.app_name), "id is null or blank");
             return;
         }
 
@@ -379,13 +412,14 @@ public class MarketMogul extends AppCompatActivity {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             Log.d(getResources().getString(R.string.app_name), "tkr exception " + e);
+            return;
         }
-        if (tkr == null || tkr == "") {
+        if (tkr == null || tkr.equals("")) {
             return;
         }
 
         if (!security.getTicker().equalsIgnoreCase(tkr)) {
-            Log.d(getResources().getString(R.string.app_name), "TICKER MISMATCH.  EPIC FAIL returned \"" + tkr + "\"  looking for \"" + security.getTicker() + "\"");
+            Log.d(getResources().getString(R.string.app_name), "TICKER MISMATCH.  EPIC FAIL! returned \"" + tkr + "\"  looking for \"" + security.getTicker() + "\"");
             return;
         }
 
@@ -394,31 +428,29 @@ public class MarketMogul extends AppCompatActivity {
         try {
             tmp = json.getString("ltt");
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             Log.d(getResources().getString(R.string.app_name), "time exception " + e);
+            return;
         }
-        if (tkr == null || tkr == "") {
+
+        if (tkr == null || tkr.equals("")) {
             return;
         }
         security.setTime(tmp);
 
         //get last price
-        double val = 0.0;
-
         try {
             tmp = json.getString("l_fix");
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             Log.d(getResources().getString(R.string.app_name), "last price exception " + e);
         }
 
-        if (tmp == null || tmp == "") {
+        if (tmp == null || tmp.equals("")) {
             return;
         }
         try {
             security.setCurrPrice(Double.parseDouble(tmp));
         } catch (Exception e) {
-            Log.d(getResources().getString(R.string.app_name), "error parsing currPrice. " + tmp);
+            Log.d(getResources().getString(R.string.app_name), "currPrice parsing exception. " + tmp);
             security.setTime("ERROR");
             security.setCurrPrice(0);
         }
@@ -427,16 +459,15 @@ public class MarketMogul extends AppCompatActivity {
         try {
             tmp = json.getString("c");
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             Log.d(getResources().getString(R.string.app_name), "change-on-day exception " + e);
         }
-        if (tmp == null || tmp == "") {
+        if (tmp == null || tmp.equals("")) {
             return;
         }
         try {
             security.setChange(Double.parseDouble(tmp));
         } catch (Exception e) {
-            Log.d(getResources().getString(R.string.app_name), "error parsing change. " + tmp);
+            Log.d(getResources().getString(R.string.app_name), "exception parsing time. " + tmp);
             security.setTime("ERROR");
             security.setChange(0);
         }
@@ -445,7 +476,7 @@ public class MarketMogul extends AppCompatActivity {
     private String myHttpGET(String u) {
 
 
-        NetworkInfo net = db.getNetworkInfo();
+        NetworkUse net = db.getNetworkInfo();
         net.setSent(net.getSent() + u.length());
 
         URL url = null;
@@ -455,33 +486,34 @@ public class MarketMogul extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        HttpURLConnection httpconn = null;
+        HttpURLConnection httpConn = null;
         try {
-            httpconn = (HttpURLConnection) url.openConnection();
+            httpConn = (HttpURLConnection) url.openConnection();
         } catch (Exception e) {
             e.printStackTrace();
         }
         BufferedReader input = null;
         try {
-            if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 input = new BufferedReader(new InputStreamReader(
-                        httpconn.getInputStream()), 8192);
+                        httpConn.getInputStream()), 8192);
             } else {
                 Log.d(getResources().getString(R.string.app_name), "myHttpGET(): bad http return code. url: " + u
                         + " code "
-                        + httpconn.getResponseCode()
+                        + httpConn.getResponseCode()
                         + " "
-                        + httpconn.getResponseMessage());
+                        + httpConn.getResponseMessage());
+                return "";
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         StringBuilder response = new StringBuilder();
-        String strline = null;
+        String strLine = "";
         try {
-            while ((strline = input.readLine()) != null) {
-                response.append(strline);
+            while ((strLine = input.readLine()) != null) {
+                response.append(strLine);
             }
             input.close();
         } catch (Exception e) {
