@@ -218,8 +218,14 @@ public class DatabaseCode extends SQLiteOpenHelper {
         while (tt.moveToNext()) {
             Security s = new Security(
                     tt.getString(0),
+                    "",
                     "--",
-                    0.0, 0.0, 0.0, 0.0, 0.0);
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    "");
 
             securities.add(s);
         }

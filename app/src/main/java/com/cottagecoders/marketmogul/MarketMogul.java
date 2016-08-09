@@ -33,6 +33,10 @@ public class MarketMogul extends AppCompatActivity {
     Runnable runnable = null;
     DatabaseCode db = null;
 
+    static final String EUROS = "\u20ac";
+    static final String GBP = "\u00a3";
+
+    // just a number to indicate we need to refresh the display.
     static final int MUST_REFRESH = 678;
 
     // interval in ms.
@@ -176,7 +180,13 @@ public class MarketMogul extends AppCompatActivity {
                 tr = new TableRow(getApplicationContext());
             }
             TextView tv = textViewSetup();
-            tv.setText(s.getTicker());
+
+            String tmp = s.getTicker();
+            if (s.getExch().length() > 0) {
+                tmp += "(" + s.getExch() + ")";
+            }
+
+            tv.setText(tmp);
             tv.setTextColor(getResources().getColor(R.color.White));
             tv.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tr.addView(tv);
@@ -186,7 +196,7 @@ public class MarketMogul extends AppCompatActivity {
             tr.addView(tv);
 
             tv = textViewSetup();
-            tv.setText("" + s.getCurrPrice());
+            tv.setText(s.getCurrency() + s.getCurrPrice());
             tr.addView(tv);
 
             tv = textViewSetup();
@@ -244,6 +254,11 @@ public class MarketMogul extends AppCompatActivity {
                                     Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         Log.d(getResources().getString(R.string.app_name), "onActivityResult");
+
+        if (lastUpdate + UPDATE_INTERVAL < System.currentTimeMillis()) {
+            lastUpdate = 0;
+        }
+
         switch (requestCode) {
             case 111: //edit
                 securities = db.getAllSecurities();
@@ -253,9 +268,6 @@ public class MarketMogul extends AppCompatActivity {
                 break;
 
             case 222: //about
-                if(lastUpdate + UPDATE_INTERVAL < System.currentTimeMillis()) {
-                    lastUpdate = 0;
-                }
                 break;
 
             default:
@@ -343,6 +355,7 @@ public class MarketMogul extends AppCompatActivity {
         }
     }
 
+
     private void getSecurityInfo(Security security) {
 
         String url = "http://finance.google.com/finance/info?client=ig&q=";
@@ -423,39 +436,66 @@ public class MarketMogul extends AppCompatActivity {
             return;
         }
 
-        //get time
-        String tmp = "";
+        // get exchange.
+        String exch = "";
+        //set currency if not $$.
+        String currency = "";
         try {
-            tmp = json.getString("ltt");
+            exch = json.getString("e");
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.d(getResources().getString(R.string.app_name), "exchange exception " + e);
+            return;
+        }
+        if (exch == null
+                || exch.equals("")
+                || exch.equalsIgnoreCase("NYSE")
+                || exch.equalsIgnoreCase("NASDAQ")
+                || exch.equalsIgnoreCase("INDEXSP")) {
+            exch = "";
+        } else if( exch.equalsIgnoreCase("OTCMKTS")) { // Maybe prices are in Euros?
+            currency = EUROS;
+        } else if( exch.equalsIgnoreCase("LON")) { // Maybe prives are in GBP?
+            currency = GBP;
+        }
+        security.setExch(exch);
+        security.setCurrency(currency);
+
+        //get time
+        String tim = "";
+        try {
+            tim = json.getString("ltt");
         } catch (Exception e) {
             Log.d(getResources().getString(R.string.app_name), "time exception " + e);
             return;
         }
 
-        if (tkr == null || tkr.equals("")) {
+        if (tim == null || tim.equals("")) {
             return;
         }
-        security.setTime(tmp);
+        security.setTime(tim);
 
         //get last price
+        String pr = "";
         try {
-            tmp = json.getString("l_fix");
+            pr = json.getString("l_fix");
         } catch (Exception e) {
             Log.d(getResources().getString(R.string.app_name), "last price exception " + e);
         }
 
-        if (tmp == null || tmp.equals("")) {
+        if (pr == null || pr.equals("")) {
             return;
         }
         try {
-            security.setCurrPrice(Double.parseDouble(tmp));
+            security.setCurrPrice(Double.parseDouble(pr));
         } catch (Exception e) {
-            Log.d(getResources().getString(R.string.app_name), "currPrice parsing exception. " + tmp);
+            Log.d(getResources().getString(R.string.app_name), "currPrice parsing exception. " + pr);
             security.setTime("ERROR");
             security.setCurrPrice(0);
         }
 
         //get change on day.
+        String tmp = "";
         try {
             tmp = json.getString("c");
         } catch (Exception e) {

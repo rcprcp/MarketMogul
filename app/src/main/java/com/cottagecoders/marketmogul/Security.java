@@ -6,33 +6,40 @@ package com.cottagecoders.marketmogul;
 public class Security {
     String ticker;
     String time;
+    String exch;
     double currPrice;
     double change;
     double highPrice;
     double lowPrice;
     double volume;
+    String currency;
 
     public Security() {
         this.ticker = "";
         this.time = "";
+        this.exch = "";
         this.currPrice = 0.0;
         this.change = 0.0;
         this.highPrice = 0.0;
         this.lowPrice = 0.0;
         this.volume = 0.0;
+        this.currency = "";
 
     }
 
-    public Security(String ticker, String time,
-                    double currPrice, double change, double highPrice, double lowPrice, double volume) {
+    public Security(String ticker, String exch, String time,
+                    double currPrice, double change, double highPrice,
+                    double lowPrice, double volume, String currency) {
 
         this.ticker = ticker;
         this.time = time;
+        this.exch = exch;
         this.change = change;
         this.currPrice = currPrice;
         this.highPrice = highPrice;
         this.lowPrice = lowPrice;
         this.volume = volume;
+        this.currency = currency;
     }
 
     public String getTicker() {
@@ -77,6 +84,22 @@ public class Security {
 
     public double getChange() {
         return change;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getExch() {
+        return exch;
+    }
+
+    public void setExch(String exch) {
+        this.exch = exch;
     }
 
     public void setChange(double change) {

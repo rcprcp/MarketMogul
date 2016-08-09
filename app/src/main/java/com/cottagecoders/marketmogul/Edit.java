@@ -153,6 +153,15 @@ public class Edit extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Log.d(getResources().getString(R.string.app_name), "Edit: onBackPressed()");
+//        super.onBackPressed();
+        setResult(returnCode, getIntent());
+        finish();
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         Log.d(getResources().getString(R.string.app_name), " onOptionsItemSelected: " + item.getItemId());
