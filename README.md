@@ -29,7 +29,7 @@ TODO:
 
 Done:
 * Implement two-column layout when in landscape mode.
-* fix bug in langscape mode if there is an off number of securities - last security does not get displayed.
+* fix bug in langscape mode if there is an odd number of securities - last security does not get displayed.
 * add a few initial entries to the database.
 * fix bug causing double updates.
 * implemented progress bar, for start up, and when returning from the "Edit" screen, but it does not display when normal (timed) updates occur.
